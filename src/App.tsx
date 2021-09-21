@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import './App.css';
 import {Todolist, TaskType} from './Todolist';
 import {v1} from 'uuid';
@@ -19,22 +19,22 @@ export type TasksStateType = {
 }
 
 function App() {
-    function removeTask(id: string, todolistId: string) {
+    const removeTask = useCallback((id: string, todolistId: string) => {
         let tasks = taskObj[todolistId]
         let filteredTasks = tasks.filter(t => t.id != id);
         taskObj[todolistId] = filteredTasks
         setTasksObj({...taskObj});
-    }
+    }, [])
 
-    function addTask(title: string, todolistId: string) {
+    const addTask = useCallback((title: string, todolistId: string) => {
         let task = {id: v1(), title: title, isDone: false};
         let tasks = taskObj[todolistId]
         let newTasks = [task, ...tasks];
         taskObj[todolistId] = newTasks
         setTasksObj({...taskObj});
-    }
+    }, [])
 
-    function addTodoList(title: string) {
+    const addTodoList = useCallback((title: string) => {
         let todoList: TodolistType = {
             id: v1(),
             title: title,
@@ -45,7 +45,7 @@ function App() {
             ...taskObj,
             [todoList.id]: []
         })
-    }
+    }, [])
 
     function changeFilter(value: FilterValuesType, todolistId: string) {
         let todolist = todoLists.find(tl => tl.id === todolistId)
